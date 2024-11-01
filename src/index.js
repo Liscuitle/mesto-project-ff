@@ -1,4 +1,5 @@
 import "./pages/index.css";
+
 import { initialCards } from "./components/cards.js";
 import { createCard, deleteCard } from "./components/card.js";
 import { openModal, closeModal } from "./components/modal.js";
@@ -20,6 +21,9 @@ const jobInput = profileModal.querySelector(".popup__input_type_description");
 const profileName = document.querySelector(".profile__title");
 const profileDescription = document.querySelector(".profile__description");
 
+const modalImage = imageModal.querySelector(".popup__image");
+const modalCaption = imageModal.querySelector(".popup__caption");
+
 function renderCards(cards, container, openImageCallback) {
   cards.forEach((cardData) => {
     const cardElement = createCard(cardData, deleteCard, openImageCallback);
@@ -33,11 +37,13 @@ addCardButton.addEventListener("click", () => openModal(addCardModal));
 
 function handleAddCardSubmit(evt) {
   evt.preventDefault();
+
   const newCard = createCard(
     { name: cardNameInput.value, link: cardLinkInput.value },
     deleteCard,
     openImageModal
   );
+
   placesList.prepend(newCard);
   closeModal(addCardModal);
   addCardForm.reset();
@@ -61,8 +67,6 @@ function handleProfileFormSubmit(evt) {
 profileForm.addEventListener("submit", handleProfileFormSubmit);
 
 function openImageModal(cardData) {
-  const modalImage = imageModal.querySelector(".popup__image");
-  const modalCaption = imageModal.querySelector(".popup__caption");
   modalImage.src = cardData.link;
   modalImage.alt = cardData.name;
   modalCaption.textContent = cardData.name;
