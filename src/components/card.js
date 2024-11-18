@@ -11,31 +11,27 @@ export function createCard(cardData, openImageCallback, userId) {
   const likeButton = cardElement.querySelector(".card__like-button");
   const likeCount = cardElement.querySelector(".card__like-count");
 
-  // Установка данных карточки
   cardTitle.textContent = cardData.name;
   cardImage.src = cardData.link;
   cardImage.alt = cardData.name;
   likeCount.textContent = cardData.likes.length;
 
-  // Проверяем владельца карточки
   if (cardData.owner._id !== userId) {
-    deleteButton.remove(); // Удаляем кнопку удаления, если карточка не наша
+    deleteButton.remove(); 
   } else {
     deleteButton.addEventListener("click", () => {
       deleteCardFromApi(cardData._id)
         .then(() => {
-          cardElement.remove(); // Удаляем карточку из DOM
+          cardElement.remove();
         })
         .catch((err) => console.log(`Ошибка: ${err}`));
     });
   }
 
-  // Обработчик клика на изображение
   cardImage.addEventListener("click", () => {
     openImageCallback(cardData);
   });
 
-  // Лайки
   if (cardData.likes.some((user) => user._id === userId)) {
     likeButton.classList.add("card__like-button_is-active");
   }

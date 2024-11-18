@@ -1,12 +1,12 @@
 function enableValidation(config) {
   const forms = document.querySelectorAll(config.formSelector);
   forms.forEach((form) => {
-    // Слушаем все изменения в форме
+
     form.addEventListener("input", (event) => {
       handleFormInput(event, form, config);
     });
 
-    // Устанавливаем начальное состояние кнопки для каждой формы
+    
     setButtonState(form, config);
   });
 }
@@ -19,22 +19,22 @@ function handleFormInput(event, form, config) {
     hideInputError(input, config);
   }
 
-  // Проверяем, можно ли активировать кнопку
+  
   setButtonState(form, config);
 }
 
 function setButtonState(form, config) {
   const button = form.querySelector(config.submitButtonSelector);
-  const isValid = form.checkValidity(); // Проверяем всю форму на валидность
-  button.disabled = !isValid; // Если форма невалидна, кнопка неактивна
-  button.classList.toggle(config.inactiveButtonClass, !isValid); // Включаем/выключаем стиль неактивной кнопки
+  const isValid = form.checkValidity(); 
+  button.disabled = !isValid; 
+  button.classList.toggle(config.inactiveButtonClass, !isValid); 
 }
 
 function showInputError(input, config) {
   const errorElement = input.nextElementSibling;
   const customMessage = input.getAttribute("data-error-message");
 
-  // Устанавливаем кастомное сообщение об ошибке, если оно задано
+  
   errorElement.textContent =
     customMessage && input.validity.patternMismatch
       ? customMessage
@@ -54,7 +54,7 @@ function hideInputError(input, config) {
 function clearValidation(form, config) {
   const inputs = form.querySelectorAll(config.inputSelector);
   inputs.forEach((input) => hideInputError(input, config));
-  setButtonState(form, config); // Проверяем, можно ли активировать кнопку после очистки ошибок
+  setButtonState(form, config); 
 }
 
 const validationConfig = {

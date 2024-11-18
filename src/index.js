@@ -14,7 +14,6 @@ import {
   updateAvatar,
 } from "./components/api.js";
 
-// Функция для переключения состояния кнопки
 function toggleButtonLoadingState(
   button,
   isLoading,
@@ -24,20 +23,17 @@ function toggleButtonLoadingState(
   button.textContent = isLoading ? loadingText : defaultText;
 }
 
-// Элементы и формы
 const avatarForm = document.forms["update-avatar"];
 const avatarModal = document.querySelector(".popup_type_avatar");
 const avatarImage = document.querySelector(".profile__image");
 const avatarEditButton = document.querySelector(".profile__avatar-container");
 const avatarSubmitButton = avatarForm.querySelector(".popup__button");
 
-// Открытие формы обновления аватара
 avatarEditButton.addEventListener("click", () => {
   clearValidation(avatarForm, validationConfig);
   openModal(avatarModal);
 });
 
-// Обработчик формы обновления аватара
 function handleAvatarFormSubmit(evt) {
   evt.preventDefault();
   const avatarUrl = avatarForm.elements["avatar"].value;
@@ -57,7 +53,6 @@ function handleAvatarFormSubmit(evt) {
 
 avatarForm.addEventListener("submit", handleAvatarFormSubmit);
 
-// Формы и элементы
 const profileForm = document.forms["edit-profile"];
 const profileSubmitButton = profileForm.querySelector(".popup__button");
 const newPlaceForm = document.forms["new-place"];
@@ -75,7 +70,6 @@ const jobInput = profileModal.querySelector(".popup__input_type_description");
 
 const placesList = document.querySelector(".places__list");
 
-// Рендеринг карточек
 function renderCards(cards, container, openImageCallback, userId) {
   cards.forEach((cardData) => {
     const cardElement = createCard(cardData, openImageCallback, userId);
@@ -83,7 +77,6 @@ function renderCards(cards, container, openImageCallback, userId) {
   });
 }
 
-// Открытие модального окна изображения
 function openImageModal(cardData) {
   const modalImage = document.querySelector(".popup_type_image .popup__image");
   const modalCaption = document.querySelector(
@@ -95,7 +88,6 @@ function openImageModal(cardData) {
   openModal(document.querySelector(".popup_type_image"));
 }
 
-// Обработчик формы профиля
 function handleProfileFormSubmit(evt) {
   evt.preventDefault();
   toggleButtonLoadingState(profileSubmitButton, true, "Сохранить");
@@ -114,7 +106,6 @@ function handleProfileFormSubmit(evt) {
     );
 }
 
-// Обработчик формы добавления новой карточки
 function handleNewPlaceSubmit(evt) {
   evt.preventDefault();
   const placeData = {
@@ -141,7 +132,6 @@ function handleNewPlaceSubmit(evt) {
     );
 }
 
-// Открытие модальных окон
 addCardButton.addEventListener("click", () => {
   clearValidation(newPlaceForm, validationConfig);
   openModal(addCardModal);
@@ -154,7 +144,6 @@ editProfileButton.addEventListener("click", () => {
   openModal(profileModal);
 });
 
-// Загрузка данных профиля и карточек
 Promise.all([getUserInfo(), getCards()])
   .then(([userData, cards]) => {
     const userId = userData._id;
@@ -167,9 +156,8 @@ Promise.all([getUserInfo(), getCards()])
   })
   .catch((err) => console.log(`Ошибка: ${err}`));
 
-// Включение валидации
+
 enableValidation(validationConfig);
 
-// Добавление обработчиков на формы
 profileForm.addEventListener("submit", handleProfileFormSubmit);
 newPlaceForm.addEventListener("submit", handleNewPlaceSubmit);
