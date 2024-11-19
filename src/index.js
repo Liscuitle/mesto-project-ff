@@ -1,11 +1,7 @@
 import "./pages/index.css";
 import { createCard } from "./components/card.js";
 import { openModal, closeModal } from "./components/modal.js";
-import {
-  enableValidation,
-  clearValidation,
-  validationConfig,
-} from "./components/validation.js";
+import { enableValidation, clearValidation } from "./components/validation.js";
 import {
   getUserInfo,
   getCards,
@@ -23,11 +19,22 @@ function toggleButtonLoadingState(
   button.textContent = isLoading ? loadingText : defaultText;
 }
 
+const validationConfig = {
+  formSelector: ".popup__form",
+  inputSelector: ".popup__input",
+  submitButtonSelector: ".popup__button",
+  inactiveButtonClass: "popup__button_disabled",
+  inputErrorClass: "popup__input_type_error",
+  errorClass: "popup__error_visible",
+};
+
 const avatarForm = document.forms["update-avatar"];
 const avatarModal = document.querySelector(".popup_type_avatar");
 const avatarImage = document.querySelector(".profile__image");
 const avatarEditButton = document.querySelector(".profile__avatar-container");
-const avatarSubmitButton = avatarForm.querySelector(".popup__button");
+const avatarSubmitButton = avatarForm.querySelector(
+  validationConfig.submitButtonSelector
+);
 
 avatarEditButton.addEventListener("click", () => {
   clearValidation(avatarForm, validationConfig);
@@ -44,6 +51,7 @@ function handleAvatarFormSubmit(evt) {
       avatarImage.style.backgroundImage = `url(${userData.avatar})`;
       closeModal(avatarModal);
       avatarForm.reset();
+      clearValidation(avatarForm, validationConfig); 
     })
     .catch((err) => console.log(`Ошибка: ${err}`))
     .finally(() =>
@@ -54,39 +62,22 @@ function handleAvatarFormSubmit(evt) {
 avatarForm.addEventListener("submit", handleAvatarFormSubmit);
 
 const profileForm = document.forms["edit-profile"];
-const profileSubmitButton = profileForm.querySelector(".popup__button");
-const newPlaceForm = document.forms["new-place"];
-const newPlaceSubmitButton = newPlaceForm.querySelector(".popup__button");
-
-const addCardButton = document.querySelector(".profile__add-button");
+const profileSubmitButton = profileForm.querySelector(
+  validationConfig.submitButtonSelector
+);
 const editProfileButton = document.querySelector(".profile__edit-button");
-const addCardModal = document.querySelector(".popup_type_new-card");
 const profileModal = document.querySelector(".popup_type_edit");
 const profileName = document.querySelector(".profile__title");
 const profileDescription = document.querySelector(".profile__description");
-
 const nameInput = profileModal.querySelector(".popup__input_type_name");
 const jobInput = profileModal.querySelector(".popup__input_type_description");
 
-const placesList = document.querySelector(".places__list");
-
-function renderCards(cards, container, openImageCallback, userId) {
-  cards.forEach((cardData) => {
-    const cardElement = createCard(cardData, openImageCallback, userId);
-    container.appendChild(cardElement);
-  });
-}
-
-function openImageModal(cardData) {
-  const modalImage = document.querySelector(".popup_type_image .popup__image");
-  const modalCaption = document.querySelector(
-    ".popup_type_image .popup__caption"
-  );
-  modalImage.src = cardData.link;
-  modalImage.alt = cardData.name;
-  modalCaption.textContent = cardData.name;
-  openModal(document.querySelector(".popup_type_image"));
-}
+editProfileButton.addEventListener("click", () => {
+  nameInput.value = profileName.textContent;
+  jobInput.value = profileDescription.textContent;
+  clearValidation(profileForm, validationConfig);
+  openModal(profileModal);
+});
 
 function handleProfileFormSubmit(evt) {
   evt.preventDefault();
@@ -106,6 +97,21 @@ function handleProfileFormSubmit(evt) {
     );
 }
 
+profileForm.addEventListener("submit", handleProfileFormSubmit);
+
+const newPlaceForm = document.forms["new-place"];
+const newPlaceSubmitButton = newPlaceForm.querySelector(
+  validationConfig.submitButtonSelector
+);
+const addCardButton = document.querySelector(".profile__add-button");
+const addCardModal = document.querySelector(".popup_type_new-card");
+const placesList = document.querySelector(".places__list");
+
+addCardButton.addEventListener("click", () => {
+  clearValidation(newPlaceForm, validationConfig);
+  openModal(addCardModal);
+});
+
 function handleNewPlaceSubmit(evt) {
   evt.preventDefault();
   const placeData = {
@@ -124,7 +130,7 @@ function handleNewPlaceSubmit(evt) {
       placesList.prepend(cardElement);
       closeModal(addCardModal);
       newPlaceForm.reset();
-      clearValidation(newPlaceForm, validationConfig);
+      clearValidation(newPlaceForm, validationConfig); 
     })
     .catch((err) => console.log(`Ошибка: ${err}`))
     .finally(() =>
@@ -132,17 +138,7 @@ function handleNewPlaceSubmit(evt) {
     );
 }
 
-addCardButton.addEventListener("click", () => {
-  clearValidation(newPlaceForm, validationConfig);
-  openModal(addCardModal);
-});
-
-editProfileButton.addEventListener("click", () => {
-  nameInput.value = profileName.textContent;
-  jobInput.value = profileDescription.textContent;
-  clearValidation(profileForm, validationConfig);
-  openModal(profileModal);
-});
+newPlaceForm.addEventListener("submit", handleNewPlaceSubmit);
 
 Promise.all([getUserInfo(), getCards()])
   .then(([userData, cards]) => {
@@ -159,5 +155,20 @@ Promise.all([getUserInfo(), getCards()])
 
 enableValidation(validationConfig);
 
-profileForm.addEventListener("submit", handleProfileFormSubmit);
-newPlaceForm.addEventListener("submit", handleNewPlaceSubmit);
+function renderCards(cards, container, openImageCallback, userId) {
+  cards.forEach((cardData) => {
+    const cardElement = createCard(cardData, openImageCallback, userId);
+    container.appendChild(cardElement);
+  });
+}
+
+function openImageModal(cardData) {
+  const modalImage = document.querySelector(".popup_type_image .popup__image");
+  const modalCaption = document.querySelector(
+    ".popup_type_image .popup__caption"
+  );
+  modalImage.src = cardData.link;
+  modalImage.alt = cardData.name;
+  modalCaption.textContent = cardData.name;
+  openModal(document.querySelector(".popup_type_image"));
+}

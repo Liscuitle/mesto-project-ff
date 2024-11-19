@@ -27,3 +27,14 @@
     line-height: 15px;
   }
 }
+
+.popup__button_disabled {
+  opacity: 0.5; 
+  cursor: not-allowed; 
+}
+
+.popup__error_visible {
+  display: block;
+  color: red;
+  font-size: 12px;
+}
